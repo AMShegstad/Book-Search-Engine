@@ -1,13 +1,12 @@
-import type { Request, Response } from 'express';
-// import user model
+//import user model
 import User from '../models/User.js';
 // import sign token function from auth
 import { signToken } from '../services/auth.js';
 
 // get a single user by either their id or their username
-export const getSingleUser = async (req: Request, res: Response) => {
+export const getSingleUser = async (req, res) => {
   const foundUser = await User.findOne({
-    $or: [{ _id: req.user ? req.user._id : req.params.id }, { username: req.params.username }],
+    $or: [{ _id: req.user?._id || req.params.id }, { username: req.params.username }],
   });
 
   if (!foundUser) {
@@ -18,7 +17,7 @@ export const getSingleUser = async (req: Request, res: Response) => {
 };
 
 // create a user, sign a token, and send it back (to client/src/components/SignUpForm.js)
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (req, res) => {
   const user = await User.create(req.body);
 
   if (!user) {
@@ -30,7 +29,7 @@ export const createUser = async (req: Request, res: Response) => {
 
 // login a user, sign a token, and send it back (to client/src/components/LoginForm.js)
 // {body} is destructured req.body
-export const login = async (req: Request, res: Response) => {
+export const login = async (req, res) => {
   const user = await User.findOne({ $or: [{ username: req.body.username }, { email: req.body.email }] });
   if (!user) {
     return res.status(400).json({ message: "Can't find this user" });
@@ -47,10 +46,10 @@ export const login = async (req: Request, res: Response) => {
 
 // save a book to a user's `savedBooks` field by adding it to the set (to prevent duplicates)
 // user comes from `req.user` created in the auth middleware function
-export const saveBook = async (req: Request, res: Response) => {
+export const saveBook = async (req, res) => {
   try {
     const updatedUser = await User.findOneAndUpdate(
-      { _id: req.user._id },
+      { _id: req.user?._id },
       { $addToSet: { savedBooks: req.body } },
       { new: true, runValidators: true }
     );
@@ -62,7 +61,7 @@ export const saveBook = async (req: Request, res: Response) => {
 };
 
 // remove a book from `savedBooks`
-export const deleteBook = async (req: Request, res: Response) => {
+export const deleteBook = async (req, res) => {
   const updatedUser = await User.findOneAndUpdate(
     { _id: req.user._id },
     { $pull: { savedBooks: { bookId: req.params.bookId } } },

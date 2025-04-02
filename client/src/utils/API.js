@@ -1,8 +1,5 @@
-import type { User } from '../models/User.js';
-import type { Book } from '../models/Book.js';
-
 // route to get logged in user's info (needs the token)
-export const getMe = (token: string) => {
+export const getMe = (token) => {
   return fetch('/api/users/me', {
     headers: {
       'Content-Type': 'application/json',
@@ -11,7 +8,7 @@ export const getMe = (token: string) => {
   });
 };
 
-export const createUser = (userData: User) => {
+export const createUser = (userData) => {
   return fetch('/api/users', {
     method: 'POST',
     headers: {
@@ -21,7 +18,7 @@ export const createUser = (userData: User) => {
   });
 };
 
-export const loginUser = (userData: User) => {
+export const loginUser = (userData) => {
   return fetch('/api/users/login', {
     method: 'POST',
     headers: {
@@ -32,7 +29,7 @@ export const loginUser = (userData: User) => {
 };
 
 // save book data for a logged in user
-export const saveBook = (bookData: Book, token: string) => {
+export const saveBook = (bookData, token) => {
   return fetch('/api/users', {
     method: 'PUT',
     headers: {
@@ -44,7 +41,7 @@ export const saveBook = (bookData: Book, token: string) => {
 };
 
 // remove saved book data for a logged in user
-export const deleteBook = (bookId: string, token: string) => {
+export const deleteBook = (bookId, token) => {
   return fetch(`/api/users/books/${bookId}`, {
     method: 'DELETE',
     headers: {
@@ -55,6 +52,6 @@ export const deleteBook = (bookId: string, token: string) => {
 
 // make a search to google books api
 // https://www.googleapis.com/books/v1/volumes?q=harry+potter
-export const searchGoogleBooks = (query: string) => {
+export const searchGoogleBooks = (query) => {
   return fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
 };
